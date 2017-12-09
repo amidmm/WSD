@@ -8,7 +8,7 @@ def importEFromPaj(path):
     :return: a graph object
     """
     graph = nx.Graph()
-    with open(path) as pajFile:
+    with open(path,encoding="utf-8") as pajFile:
         pajFile.readline()
         for i in pajFile.readlines():
             if i =="*Arcs\n":
