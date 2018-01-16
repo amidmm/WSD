@@ -1,7 +1,7 @@
 import networkx as nx
 
 
-def importEFromPaj(path):
+def importFromPaj(path):
     """
     Import Graph from the paj
     :param path: path of the paj file
@@ -25,4 +25,30 @@ def importEFromPaj(path):
     # print("Drawing plot")
     # nx.draw_networkx(graph)
     # print("Done")
+    return graph
+
+def importFromNet(path):
+    """
+        Import Graph from the net
+        :param path: path of the net file
+        :return: a graph object
+    """
+    graph = nx.Graph()
+    with open(path) as file:
+        file.readline()
+        isNode = True
+        currentTag =""
+        data = file.readlines()
+        for i in data:
+            if i.startswith("*"):
+                currentTag = i.split("\"")[1]
+                isNode=False
+                continue
+            if currentTag == "":
+                graph.add_node(i.split()[0],attr_dict={"Value":i.split()[1].split("\"")[1].replace("#","")})
+            else:
+                startNode = i.split()[0]
+                for x in i.split()[1:]:
+                    graph.add_edge(startNode,x,attr_dict={"Relation":currentTag})
+
     return graph
