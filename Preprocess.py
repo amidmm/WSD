@@ -1,9 +1,9 @@
 
 import re
+from Utility import read_file
 
-file = open("resources/stop-words.txt", "r")
-stop_words = file.read().split()
+stop_words = read_file("resources/stop-words.txt").split()
 
-
+'''and re.sub("\s|\u200c", "", word).isalnum()'''
 def remove_stop_words(words):
-    return [word for word in words if word not in stop_words and re.sub("\s|\u200c", "", word).isalnum()]
+    return [word for word in words if word not in stop_words]
