@@ -1,6 +1,7 @@
-
 import MySQLdb
 import re
+port = 6060
+host = 'localhost'
 
 db = MySQLdb.connect(host="localhost",  # your host
                      user="root",       # username
@@ -58,3 +59,71 @@ def fetch_definition(syn):
 
 #v=fetch_synsets('دفتر', 'N')
 #print(v)
+
+
+def AccuFetchSynset(w,tag):
+    import json, os
+    filePath = "Resource//synsets.json"
+    if not os.path.isfile(filePath):
+        file = open(filePath,"a",encoding="utf-8")
+        newEntry = fetch_synsets(w,tag)
+        file.write(json.dumps({w+"_"+tag:newEntry},ensure_ascii=False))
+        file.close()
+        return newEntry
+    data = json.loads(open(filePath,encoding="utf-8").read())
+    try:
+        return data[w+"_"+tag]
+    except:
+        newEntry = fetch_synsets(w,tag)
+        data[w+"_"+tag] = newEntry
+        open(filePath,'w',encoding="utf-8").writelines(json.dumps(data,ensure_ascii=False))
+        return newEntry
+
+
+
+
+def FetchSynsetServer():
+    """
+    IMPORTANT : should kill the server via FetchServerKill() when you're done
+    :return:
+    """
+    import socket,json,os
+    filePath = "Resource//synsets.json"
+    s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+    s.bind((host,port))
+    s.listen(5)
+    if not os.path.isfile(filePath):
+        file = open(filePath,"a",encoding="utf-8").close()
+    else:
+        data = json.loads(open(filePath,encoding="utf-8").read())
+    while 1:
+        conn, addr = s.accept()
+        request = conn.recv(4096).decode('utf-8')
+        #print("Server[request]: " + request)
+        if request == "exit_":
+            open(filePath,'w',encoding="utf-8").writelines(json.dumps(data,ensure_ascii=False))
+            break
+        w,tag = request.split("_")
+        try:
+            conn.sendall(str(data[w+"_"+tag]).encode('utf-8'))
+            #print("Server[reply]: " + str(data[w+"_"+tag]))
+        except:
+            newEntry = fetch_synsets(w,tag)
+            data[w+"_"+tag] = newEntry
+            conn.sendall(str(data[w+"_"+tag]).encode('utf-8'))
+            #print("Server[reply]: " + str(data[w+"_"+tag]))
+
+
+def FetchSynsetClient(w,tag):
+    import socket
+    s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+    s.connect((host,port))
+    s.sendall(str(w+"_"+tag).encode('utf-8'))
+    if w=="exit":
+        return
+    #print("Client[sent]: " + str(w+"_"+tag))
+    result = s.recv(4096).decode("utf-8")
+    #print("Client[result]: " + result)
+
+def FetchServerKill():
+    FetchSynsetClient("exit","")
