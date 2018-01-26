@@ -14,11 +14,19 @@ FarsNet = importFromPaj("resources/synset_relation.paj")
 def run_wsd(sentence, verbose=False):
 
     all_syns, candid_syns = extract_synsets(sentence)
-
+    '''teleport_set = {}
+    for k in candid_syns:
+        if len(candid_syns[k]) == 1:
+            teleport_set[candid_syns[k][0]] = 0
+    if len(teleport_set) > 0:
+        for k in teleport_set:
+            teleport_set[k] = 1/len(teleport_set)'''
     g = buildGraph(all_syns, FarsNet)
+    #nx.write_gexf(g, '/tmp/10215.gephi')
     if verbose:
         print("{} nodes included in graph".format(len(g.nodes())))
     #ranks_deg = nx.degree_centrality(g)
+    #ranks_pr = nx.pagerank(g, personalization=teleport_set)
     ranks_pr = nx.pagerank(g)
     ranks = ranks_pr
     #{k: (ranks_deg.get(k, 0) + ranks_pr.get(k, 0))/2 for k in all_syns}
@@ -54,8 +62,9 @@ def extract_synsets(sentence):
         syns = fetch_synsets(w, tag)
         if len(syns) == 0:
             root = stemmer.stem(w)
-            syns = fetch_synsets(root, tag)
-        if len(syns) > 1:
+            if root is not "":
+                syns = fetch_synsets(root, tag)
+        if len(syns) > 0:
             candid_syns[w + '_' + tag] = syns
         for s in syns:
             all_syns.append(str(s))

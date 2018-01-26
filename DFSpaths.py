@@ -11,5 +11,5 @@ def DFSpaths(graph, start, goals):
             if next in goals:
                 i +=1
                 yield path + [next]
-            elif len(path)<2:
+            elif len(path) < 2:
                 stack.append((next, path + [next]))
