@@ -1,12 +1,7 @@
-# numpy bug start
-#Todo not include in push
-import os
-os.environ.setdefault('PATH', '')
-#numpy buf end 
 import networkx as nx
 import time
 
-def gephiExport(graph):
+def CsvExport(graph):
     file = open("export/exportNodes"+str(time.time())+".csv","w+")
     file2 = open("export/exportEdges"+str(time.time())+".csv","w+")
     file.writelines("Id,Label\n")
