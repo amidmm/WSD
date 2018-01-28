@@ -16,9 +16,9 @@ def importFromPaj(path):
             x=i.split("\"")
             b=x[0].split()
             if len(b)==1:
-                graph.add_node(b[0],attr_dict={"Value":x[1]})
+                graph.add_node(b[0],Value=x[1])
             elif len(b)==2:
-                graph.add_edge(b[0],b[1],attr_dict={"Relation":x[1]})
+                graph.add_edge(b[0],b[1],Relation=x[1])
                 # print(graph.edge[b[0]])
             else :
                 pass
@@ -45,10 +45,10 @@ def importFromNet(path):
                 isNode=False
                 continue
             if currentTag == "":
-                graph.add_node(i.split()[0],attr_dict={"Value":i.split()[1].split("\"")[1].replace("#","")})
+                graph.add_node(i.split()[0],Value=i.split()[1].split("\"")[1].replace("#",""))
             else:
                 startNode = i.split()[0]
                 for x in i.split()[1:]:
-                    graph.add_edge(startNode,x,attr_dict={"Relation":currentTag})
+                    graph.add_edge(startNode,x,Relation=currentTag)
 
     return graph
