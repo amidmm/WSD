@@ -16,7 +16,7 @@ def importFromPaj(path):
             x=i.split("\"")
             b=x[0].split()
             if len(b)==1:
-                graph.add_node(b[0],Label=x[1])
+                graph.add_node(b[0], Value=x[1])
             elif len(b)==2:
                 graph.add_edge(b[0],b[1],Relation=x[1])
                 # print(graph.edge[b[0]])
