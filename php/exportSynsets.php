@@ -34,6 +34,6 @@ if ($result->num_rows > 0) {
 } else {
     echo "0 results";
 }
-file_put_contents("synset_relation.txt", $r);
+file_put_contents("/tmp/synset_relation.paj", $r);
 $conn->close();
 ?>
