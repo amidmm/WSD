@@ -97,7 +97,7 @@ def find_almost_certain_examples():
     import matplotlib.pyplot as plt
     print(np.histogram(num_certains))
     plt.hist(num_certains, bins=np.arange(12)-.5)
-    plt.ylabel('Number of sentences');
+    plt.ylabel('Number of sentences')
     plt.xlabel('Number of certain words')
     plt.show()
     print(len(ambigs), certain_sens, sum(num_certains))
